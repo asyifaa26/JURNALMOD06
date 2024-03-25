@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Xml.Linq;
 
 namespace modul6_1302223029
@@ -15,7 +16,7 @@ namespace modul6_1302223029
             Random random = new Random();
             id = random.Next(1000, 99999);
 
-            Debug.Assert(title.Length <= 100 && title != null);
+            Debug.Assert(title.Length <= 200 && title != null);
             this.title = title;
             this.playCount = 0;
         }
@@ -24,7 +25,20 @@ namespace modul6_1302223029
 
         public void IncreasePlayCount(int count)
         {
-            this.playCount = count + 1;
+            Contract.Requires(count > 0 && count <= 25000000, "Input penambahan play count maximal 25.000.000 play count");
+
+            try
+            {
+                checked
+                {
+                    playCount += count;
+                }
+            }
+
+            catch (OverflowException)
+            {
+                Console.WriteLine("Error");
+            }
         }
 
         public void PrintVideoDetails() 
@@ -43,6 +57,7 @@ namespace modul6_1302223029
         
         public SayaTubeUser(string username) 
         {
+            Debug.Assert(username.Length <= 100 && username != null);
             this.username = username;
             this.uploadedVideos = new List<SayaTubeVideo>();
         }
@@ -54,6 +69,7 @@ namespace modul6_1302223029
 
         public void AddVideo(SayaTubeVideo video)
         {
+            Contract.Requires(video != null);
             uploadedVideos.Add(video);
         }
 
